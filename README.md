@@ -306,6 +306,125 @@ numbers.map({
     })
 ```
 
+## Объекты и классы
+
+Для создания класса используется зарезервированное слово class. Члены класса объявляются точно так же, как и обычные константы и переменные. Более того, методы класса объявляются как обычные функции.
+
+```swift
+class Shape {
+    var numberOfSides = 0
+    func simpleDescription() -> String {
+        return "A shape with \(numberOfSides) sides."
+    }
+}
+```
+
+Чтобы создать экземпляр (объект) класса, достаточно добавить круглые скобки после названия класса. Доступ к методам и членам класса осуществляется через точку.
+
+```swift
+var shape = Shape()
+shape.numberOfSides = 7
+var shapeDescription = shape.simpleDescription()
+```
+
+В этой версии класса Shape отсутствует кое-что важное, а именно инициализатор. Он нужен для того, чтобы подготовить класс, когда создается экземпляр класса. Для его создания используйте оператор init.
+
+```swift
+class NamedShape {
+    var numberOfSides: Int = 0
+    var name: String
+    
+    init(name: String) {
+        self.name = name
+    }
+    
+    func simpleDescription() -> String {
+        return "A shape with \(numberOfSides) sides."
+    }
+}
+```
+
+Обратите внимание, как член класса name при помощи *self* отделен от аргумента конструктора *name*. Аргументы передаются в конструктор обычным образом, как и в любой другой метод класса. Обратите внимание на то, что каждый член класса должен быть проинициализирован – либо при объявлении (как, например, *numberOfSides*), либо в конструкторе (как *name*).
 
 
+Чтобы наследовать класс от уже существующего класса, после указания имени дочернего класса следует поставить двоеточие и указать название родительского. В Swift нет никаких ограничений по обязательному наследованию какого-либо стандартного класса.
 
+Переопределенные дочерним классом методы должны быть помечены ключевым словом override – переопределение методов без override приведет к ошибке. Компилятор также выявляет методы, маркированные override, но не переопределяющие какие-либо методы своего родительского класса.
+
+```swift
+class Square: NamedShape {
+    var sideLength: Double
+    
+    init(sideLength: Double, name: String) {
+        self.sideLength = sideLength
+        super.init(name: name)
+        numberOfSides = 4
+    }
+    
+    func area() ->  Double {
+        return sideLength * sideLength
+    }
+    
+    override func simpleDescription() -> String {
+        return "A square with sides of length \(sideLength)."
+    }
+}
+let test = Square(sideLength: 5.2, name: "my test square")
+test.area()
+test.simpleDescription()
+```
+
+
+## Перечисления и Структуры
+
+Для создания перечислений используется ключевое слово enum. 
+
+```swift
+enum Rank: Int {
+    case Ace = 1
+    case Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten
+    case Jack, Queen, King
+    func simpleDescription() -> String {
+        switch self {
+        case .Ace:
+            return "ace"
+        case .Jack:
+            return "jack"
+        case .Queen:
+            return "queen"
+        case .King:
+            return "king"
+        default:
+            return String(self.toRaw())
+        }
+    }
+}
+let ace = Rank.Ace
+let aceRawValue = ace.toRaw()
+```
+
+В вышеприведенном примере элементы перечисления первоначально имеют целочисленный тип, и вам достаточно указать значение только первого элемента – значения остальных элементов будут определены в соответствии с порядком их следования. В качестве исходного типа (raw value) значений элементов вы также можете выбрать строковый или вещественные типы.
+
+Для преобразования исходного типа значения в тип перечисления используйте функции *toRaw* и *fromRaw*.
+
+```swift
+if let convertedRank = Rank.fromRaw(3) {
+    let threeDescription = convertedRank.simpleDescription()
+}
+```
+
+Для создания структур используется ключевое слово *struct*. Структуры имеют множество схожих черт с классами, включая методы и конструкторы. Одним из наиболее существенных отличий структур от классов является то, что экземпляры структур, в отличие от экземпляров классов, передаются в функции по значению (то есть предварительно создается их локальная копия), тогда как экземпляры классов передаются по ссылке.
+
+```swift
+struct Card {
+    var rank: Rank
+    var suit: Suit
+    func simpleDescription() -> String {
+        return "The \(rank.simpleDescription()) of \(suit.simpleDescription())"
+    }
+}
+let threeOfSpades = Card(rank: .Three, suit: .Spades)
+let threeOfSpadesDescription = threeOfSpades.simpleDescription()
+```
+
+Экземпляр члена перечисления может иметь собственные значения и они могут быть разными. Вы присваиваете эти значения при создании экземпляра перечисления (константа success в примере). Связанные и исходные значения это разные вещи: исходное значение члена перечисления всегда постоянно для всех экземпляров перечисления и указывается при его объявлении.
