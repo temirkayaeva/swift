@@ -428,3 +428,49 @@ let threeOfSpadesDescription = threeOfSpades.simpleDescription()
 ```
 
 Экземпляр члена перечисления может иметь собственные значения и они могут быть разными. Вы присваиваете эти значения при создании экземпляра перечисления (константа success в примере). Связанные и исходные значения это разные вещи: исходное значение члена перечисления всегда постоянно для всех экземпляров перечисления и указывается при его объявлении.
+
+## Обобщенные типы (generics)
+
+Для создания обобщенного типа, заключите имя в угловые скобки (<>).
+
+```swift
+func makeArray<Item>(repeating item: Item, numberOfTimes: Int) -> [Item] {
+    var result = [Item]()
+    for _ in 0..<numberOfTimes {
+        result.append(item)
+    }
+    return result
+}
+makeArray(repeating: "knock", numberOfTimes: 4)
+```
+
+Вы можете создать общие формы функций и методов, так же как и классов, перечислений и структур.
+
+```swift
+// Reimplement the Swift standard library's optional type
+enum OptionalValue<T> {
+    case None
+    case Some(T)
+}
+var possibleInteger: OptionalValue<Int> = .None
+possibleInteger = .Some(100)
+```
+
+Используйте where после названия типа, чтобы указать список требований, например - потребовать, чтобы тип реализовал протокол, потребовать, чтобы два типа были одинаковы, или потребовать, чтобы класс имел определенный суперкласс.
+
+```swift
+func anyCommonElements <T, U where T: Sequence, U: Sequence, T.GeneratorType.Element: Equatable, T.GeneratorType.Element == U.GeneratorType.Element> (lhs: T, rhs: U) -> Bool {
+    for lhsItem in lhs {
+        for rhsItem in rhs {
+            if lhsItem == rhsItem {
+                return true
+            }
+        }
+    }
+    return false
+}
+anyCommonElements([1, 2, 3], [3])
+```
+
+## Обработка ошибок
+
