@@ -86,6 +86,7 @@ let emptyDictionary = [String: Float]()
 
 Для создания условий используются операторы **if**  и **switch**, для создания циклов – **for-in**, **for**, **while** и **do-while**. При этом выделять круглыми скобками условия и инициализирующие выражения необязательно, тогда как фигурные скобки обязательны.
 
+
 ```swift
 let individualScores = [75, 43, 103, 87, 12]
 var teamScore = 0
@@ -99,3 +100,39 @@ for score in individualScores {
 teamScore
 ```
 
+Условие внутри оператора if должно быть логическим, это в частности означает, что выражение if score {…} является ошибочным, поскольку здесь нет явного сравнения (например, с нулем).
+
+Условный оператор *if* можно использовать совместно с *let* и *var* для работы с константами и переменными, которые могут иметь значение *nil*. Такие константы и переменные называются **опциональными**. Чтобы создать опциональную переменную или константу добавьте знак вопроса (?) после указания типа.
+
+```swift
+ var optionalString: String? = "Hello"
+optionalString == nil
+ 
+var optionalName: String? = "John Appleseed"
+var greeting = "Hello!"
+if let name = optionalName {
+    greeting = "Hello, \(name)"
+}
+```
+
+Если опциональное значение равно *nil*, условие будет ложным и код в фигурных скобках после *if* выполнен не будет. В противном случае переменной *greeting* будет присвоено новое значение.
+
+#### Switch
+
+Оператор множественного выбора *switch* поддерживает внутри себя множество других операторов сравнения и не ограничен лишь простыми сравнениями:
+
+```swift
+let vegetable = "red pepper"
+switch vegetable {
+case "celery":
+    let vegetableComment = "Add some raisins and make ants on a log."
+case "cucumber", "watercress":
+    let vegetableComment = "That would make a good tea sandwich."
+case let x where x.hasSuffix("pepper"):
+    let vegetableComment = "Is it a spicy \(x)?"
+default:
+    let vegetableComment = "Everything tastes good in soup."
+}
+```
+
+После выполнения подходящего блока кода, программа покидает оператор *switch*, не проверяя последующие условия. Таким образом вам не нужно вручную добавлять операторы прерывания *(break)* в конце каждого блока *case*.
