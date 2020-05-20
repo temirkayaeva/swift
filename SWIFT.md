@@ -472,5 +472,56 @@ func anyCommonElements <T, U where T: Sequence, U: Sequence, T.GeneratorType.Ele
 anyCommonElements([1, 2, 3], [3])
 ```
 
+## Протоколы и Расширения
+
+Для объявления протокола используйте ключевое слово protocol.
+
+```swift
+protocol ExampleProtocol {
+    var simpleDescription: String { get }
+    mutating func adjust()
+}
+```
+
+Протоколы могут поддерживаться классами, перечислениями и структурами.
+
+```swift
+class SimpleClass: ExampleProtocol {
+    var simpleDescription: String = "A very simple class."
+    var anotherProperty: Int = 69105
+    func adjust() {
+        simpleDescription += "  Now 100% adjusted."
+    }
+}
+var a = SimpleClass()
+a.adjust()
+let aDescription = a.simpleDescription
+ 
+struct SimpleStructure: ExampleProtocol {
+    var simpleDescription: String = "A simple structure"
+    mutating func adjust() {
+        simpleDescription += " (adjusted)"
+    }
+}
+var b = SimpleStructure()
+b.adjust()
+let bDescription = b.simpleDescription
+```
+
+
+Для добавления новых методов или членов класса в уже существующий тип необходимо использовать расширения – extensions. Вы также можете использовать расширения для реализации протокола уже существующим типом, даже если он импортирован из какой-либо библиотеки или фреймворка.
+
+```swift
+extension Int: ExampleProtocol {
+    var simpleDescription: String {
+    return "The number \(self)"
+    }
+    mutating func adjust() {
+        self += 42
+    }
+}
+7.simpleDescription
+```
+
 ## Обработка ошибок
 
